@@ -1,17 +1,16 @@
 FROM tmknom/openjdk8-mysql-client
 
-ENV ACTIVATOR_VER 1.3.12
+ENV SBT_VERSION 0.13.13
 
-# Install typesafe activator
-WORKDIR /opt
+# Install sbt
 RUN set -x && \
-    wget http://downloads.typesafe.com/typesafe-activator/${ACTIVATOR_VER}/typesafe-activator-${ACTIVATOR_VER}-minimal.zip && \
-    unzip typesafe-activator-${ACTIVATOR_VER}-minimal.zip  && \
-    ln -s /opt/activator-${ACTIVATOR_VER}-minimal /opt/activator && \
-    rm -f /var/opt/activator/typesafe-activator-${ACTIVATOR_VER}-minimal.zip && \
-    chmod -R 775 /opt/activator/bin/
-
-ENV PATH=$PATH:/opt/activator/bin
+    export DEBIAN_FRONTEND=noninteractive && \
+    curl -L -o sbt-${SBT_VERSION}.deb http://dl.bintray.com/sbt/debian/sbt-${SBT_VERSION}.deb && \
+    dpkg -i sbt-${SBT_VERSION}.deb && \
+    rm sbt-${SBT_VERSION}.deb && \
+    apt-get install -y --no-install-recommends sbt && \
+    apt-get clean && \
+    rm -rf /var/cache/apt/archives/* /var/lib/apt/lists/*
 
 # Install tools
 RUN set -x && \
